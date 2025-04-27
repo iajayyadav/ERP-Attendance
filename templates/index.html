@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Scraper</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <div class="card shadow p-4">
+            <h2 class="text-center mb-4">📊 Attendance Scraper</h2>
+            
+            <form method="POST" action="/scrape">
+                <div class="mb-3">
+                    <label for="start_roll" class="form-label">Start Roll Number</label>
+                    <input type="number" class="form-control" id="start_roll" name="start_roll" placeholder="1" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="end_roll" class="form-label">End Roll Number</label>
+                    <input type="number" class="form-control" id="end_roll" name="end_roll" placeholder="73" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Fetch Attendance 📥</button>
+            </form>
+
+            {% if message %}
+                <div class="alert alert-info mt-4 text-center">
+                    {{ message }}
+                </div>
+            {% endif %}
+
+            {% if download_link %}
+                <div class="mt-4 text-center">
+                    <a href="{{ download_link }}" class="btn btn-success w-100">📥 Download Report</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

@@ -98,14 +98,10 @@ def scrape():
         # CSV header
         writer.writerow(['Roll Number', 'Student Name', 'Attendance'])
 
-        # Loop through students in batches of 10
-        batch_size = 10
-        for i in range(start_roll, end_roll + 1, batch_size):
-            batch_end = min(i + batch_size - 1, end_roll)
-            print(f"Scraping batch: {i} to {batch_end}")
-            for j in range(i, batch_end + 1):
-                student_data = scrape_student(j)
-                writer.writerow(student_data)
+        # Scrape each student and write to CSV immediately
+        for i in range(start_roll, end_roll + 1):
+            student_data = scrape_student(i)
+            writer.writerow(student_data)
 
         # Reset buffer pointer to beginning
         csv_file.seek(0)
@@ -120,7 +116,6 @@ def scrape():
     except Exception as e:
         print(f"Error: {e}")
         return f"❌ An error occurred: {str(e)}", 500
-
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -101,16 +101,24 @@ def scrape():
         # Scrape each student and write to CSV immediately
         for i in range(start_roll, end_roll + 1):
             student_data = scrape_student(i)
-            writer.writerow(student_data)
+            
+            # Ensure data is valid before writing
+            if student_data and len(student_data) == 3:
+                writer.writerow(student_data)
+            else:
+                writer.writerow([i, "Data Not Found", "N/A"])
 
         # Reset buffer pointer to beginning
         csv_file.seek(0)
+
+        # Create a dynamic filename
+        filename = f'attendance_report_{start_roll}_{end_roll}.csv'
 
         return send_file(
             io.BytesIO(csv_file.getvalue().encode()),
             mimetype='text/csv',
             as_attachment=True,
-            download_name='attendance_report.csv'
+            download_name=filename
         )
 
     except Exception as e:

@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, Response, send_file, stream_with_context
 import time, csv, io, re, requests
 from bs4 import BeautifulSoup
-
 app = Flask(__name__)
 
 # Constants
@@ -9,12 +8,12 @@ login_url = 'https://sgi.accsofterp.com/AccSoft_SGI/StudentLogin.aspx'
 attendance_url = 'https://sgi.accsofterp.com/AccSoft_SGI/Parents/StuAttendanceStatus.aspx'
 
 # Roll number formatting
-def format_roll_number(i):
-    return f'0133CY2210{i:02d}' if i < 100 else f'0133CY221{i:02d}'
+def format_roll_number(i,b,y):
+    return f'0133{b}{y}10{i:02d}' if i < 100 else f'0133{b}{y}1{i:02d}'
 
 # Scraping logic for one student that yields logs
-def scrape_student(i):
-    roll = format_roll_number(i)
+def scrape_student(i,b,y):
+    roll = format_roll_number(i,b,y)
     yield f"data: 🔍 Checking for: {roll}\n\n"
     
     session = requests.Session()
@@ -76,6 +75,8 @@ def stream():
     try:
         start_roll = int(request.args.get('start_roll'))
         end_roll = int(request.args.get('end_roll'))
+        year = int(request.args.get('year'))
+        branch = request.args.get("branch").upper()
 
         def generate():
             csv_file = io.StringIO()
@@ -83,7 +84,7 @@ def stream():
             writer.writerow(['Roll Number', 'Student Name', 'Attendance'])
 
             for i in range(start_roll, end_roll + 1):
-                logs = scrape_student(i)
+                logs = scrape_student(i,branch,year)
                 result = None
                 for log in logs:
                     if isinstance(log, str):
@@ -116,4 +117,6 @@ def download(filename):
     return send_file(filename, as_attachment=True)
 
 if __name__ == '__main__':
+    
+    # serve(app, host="0.0.0.0", port=8080)
     app.run(debug=True, threaded=True)

@@ -104,6 +104,13 @@
             <label for="end_roll">End Roll</label>
             <input type="number" id="end_roll" required>
 
+            <label for="branch">Branch Code</label>
+            <input type="text" id="branch" maxlength="2" value="CY" required>
+
+            <label for="year">Admission Year</label>
+            <input type="text" id="year" maxlength="2" pattern="\d{2}" value="22" required title="Enter exactly 2 digits">
+            
+
             <button type="submit">🚀 Start Scraping</button>
         </form>
 
@@ -111,28 +118,33 @@
     </div>
 
     <script>
-        document.getElementById("scrapeForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            const logs = document.getElementById("logs");
-            logs.innerHTML = "<div class='line'>🔄 Scraping started...</div>\n";
+       document.getElementById("scrapeForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const logs = document.getElementById("logs");
+    logs.innerHTML = "<div class='line'>🔄 Scraping started...</div>\n";
 
-            const start_roll = document.getElementById("start_roll").value;
-            const end_roll = document.getElementById("end_roll").value;
+    const start_roll = document.getElementById("start_roll").value;
+    const end_roll = document.getElementById("end_roll").value;
+    const year = document.getElementById("year").value;
+    const branch = document.getElementById("branch").value.toUpperCase();
 
-            const eventSource = new EventSource(`/stream?start_roll=${start_roll}&end_roll=${end_roll}`);
+    const eventSource = new EventSource(
+        `/stream?start_roll=${start_roll}&end_roll=${end_roll}&branch=${branch}&year=${year}`
+    );
 
-            eventSource.onmessage = function(e) {
-                const newLine = document.createElement("div");
-                newLine.className = "line";
-                newLine.textContent = e.data;
-                logs.appendChild(newLine);
-                logs.scrollTop = logs.scrollHeight; // auto scroll to bottom
-            };
+    eventSource.onmessage = function(e) {
+        const newLine = document.createElement("div");
+        newLine.className = "line";
+        newLine.textContent = e.data;
+        logs.appendChild(newLine);
+        logs.scrollTop = logs.scrollHeight; // auto scroll to bottom
+    };
 
-            eventSource.addEventListener("done", function() {
-                eventSource.close();
-            });
-        });
+    eventSource.addEventListener("done", function() {
+        eventSource.close();
+    });
+});
+
     </script>
 </body>
 </html>

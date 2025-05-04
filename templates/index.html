@@ -1,150 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Real-Time Attendance Scraper</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(to right, #667eea, #764ba2);
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding-top: 50px;
-            margin: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Real-Time Attendance Scraper</title>
+  <style>
+    :root {
+      --bg: #f0f0f0;
+      --text: #1f2937;
+      --card: #ffffff;
+      --input-bg: #f5f5f5;
+      --accent: #34d399;
+      --log-bg: #eeeeee;
+    }
 
-        .container {
-            background-color: rgba(0, 0, 0, 0.3);
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 500px;
-        }
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --text: #f8fafc;
+      --card: rgba(255,255,255,0.05);
+      --input-bg: rgba(255,255,255,0.1);
+      --accent: #10b981;
+      --log-bg: rgba(255,255,255,0.07);
+    }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 50px;
+      transition: background 0.3s, color 0.3s;
+    }
 
-        label {
-            display: block;
-            margin-top: 15px;
-            font-size: 16px;
-        }
+    .container {
+      background: var(--card);
+      padding: 35px 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 520px;
+      animation: slideUp 0.6s ease;
+      position: relative;
+    }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            margin-top: 5px;
-            font-size: 16px;
-        }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #34d399;
-            color: black;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            margin-top: 25px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: transform 0.2s ease, background 0.3s ease;
-        }
+    label {
+      display: block;
+      margin-top: 18px;
+      font-size: 15px;
+    }
 
-        button:hover {
-            background: #10b981;
-            transform: scale(1.03);
-        }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: none;
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 16px;
+      transition: background 0.3s;
+    }
 
-        #logs {
-            margin-top: 25px;
-            background: #1f2937;
-            padding: 15px;
-            border-radius: 8px;
-            height: 300px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            font-family: monospace;
-            font-size: 14px;
-            animation: fadeIn 0.5s ease;
-        }
+    input:focus {
+      outline: 2px solid var(--accent);
+    }
 
-        @keyframes fadeIn {
-            from {opacity: 0; transform: translateY(10px);}
-            to {opacity: 1; transform: translateY(0);}
-        }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      margin-top: 25px;
+      font-size: 17px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
 
-        .line {
-            animation: typeIn 0.4s ease;
-        }
+    button:hover {
+      transform: scale(1.03);
+    }
 
-        @keyframes typeIn {
-            from {opacity: 0;}
-            to {opacity: 1;}
-        }
-    </style>
+    #logs {
+      margin-top: 25px;
+      background: var(--log-bg);
+      padding: 15px;
+      border-radius: 10px;
+      height: 250px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    .line {
+      animation: typeIn 0.4s ease;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      width: 45px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text);
+      font-size: 18px;
+      padding: 8px 12px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 12px var(--accent);
+    }
+
+    .spinner {
+      display: none;
+      margin: 10px auto;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes typeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes slideUp {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    #downloadBtn {
+      margin-top: 10px;
+      background: #3b82f6;
+      color: white;
+      font-size: 15px;
+    }
+
+    #downloadBtn:hover {
+      background: #2563eb;
+    }
+  </style>
 </head>
-<body>
-    <div class="container">
-        <h2>📊 Attendance Scraper</h2>
-        <form id="scrapeForm">
-            <label for="start_roll">Start Roll</label>
-            <input type="number" id="start_roll" required>
+<body data-theme="dark">
+  <div class="container">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" onclick="toggleTheme();">
+      <svg id="themeIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 0111.21 3 7 7 0 0012 21a9 9 0 009-8.21z"></path>
+      </svg>
+    </button>
 
-            <label for="end_roll">End Roll</label>
-            <input type="number" id="end_roll" required>
+    <h2>📊 Attendance Scraper</h2>
+    <form id="scrapeForm">
+      <label for="start_roll">Start Roll</label>
+      <input type="number" id="start_roll" placeholder="e.g. 001" required>
 
-            <label for="branch">Branch Code</label>
-            <input type="text" id="branch" maxlength="2" value="CY" required>
+      <label for="end_roll">End Roll</label>
+      <input type="number" id="end_roll" placeholder="e.g. 073" required>
 
-            <label for="year">Admission Year</label>
-            <input type="text" id="year" maxlength="2" pattern="\d{2}" value="22" required title="Enter exactly 2 digits">
-            
+      <label for="branch">Branch Code</label>
+      <input type="text" id="branch" maxlength="2" value="CY" required>
 
-            <button type="submit">🚀 Start Scraping</button>
-        </form>
+      <label for="year">Admission Year</label>
+      <input type="text" id="year" maxlength="2" pattern="\d{2}" value="22" required title="Enter exactly 2 digits">
 
-        <div id="logs"></div>
+      <div class="spinner" id="spinner"></div>
+      <button type="submit">🚀 Start Scraping</button>
+      <button type="button" id="downloadBtn">📥 Download Logs</button>
+    </form>
+
+    <!-- Progress Bar -->
+    <div id="progressWrapper" style="display:none; margin-top: 20px;">
+      <div style="background: #ddd; border-radius: 8px; height: 20px; overflow: hidden;">
+        <div id="progressBar" style="height: 100%; width: 0%; background: var(--accent); text-align: center; color: black; font-weight: bold; transition: width 0.3s;"></div>
+      </div>
     </div>
 
-    <script>
-       document.getElementById("scrapeForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const logs = document.getElementById("logs");
-    logs.innerHTML = "<div class='line'>🔄 Scraping started...</div>\n";
+    <div id="logs"></div>
+  </div>
 
-    const start_roll = document.getElementById("start_roll").value;
-    const end_roll = document.getElementById("end_roll").value;
-    const year = document.getElementById("year").value;
-    const branch = document.getElementById("branch").value.toUpperCase();
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute("data-theme");
+      body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+    }
 
-    const eventSource = new EventSource(
-        `/stream?start_roll=${start_roll}&end_roll=${end_roll}&branch=${branch}&year=${year}`
-    );
+    document.getElementById("scrapeForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const logs = document.getElementById("logs");
+      logs.innerHTML = "<div class='line'>🔄 Scraping started...</div>\n";
+      document.getElementById("spinner").style.display = "block";
 
-    eventSource.onmessage = function(e) {
+      const start_roll = document.getElementById("start_roll").value;
+      const end_roll = document.getElementById("end_roll").value;
+      const year = document.getElementById("year").value;
+      const branch = document.getElementById("branch").value.toUpperCase();
+
+      const progressWrapper = document.getElementById("progressWrapper");
+      const progressBar = document.getElementById("progressBar");
+      progressWrapper.style.display = "block";
+      progressBar.style.width = "0%";
+      progressBar.textContent = "0%";
+
+      const eventSource = new EventSource(`/stream?start_roll=${start_roll}&end_roll=${end_roll}&branch=${branch}&year=${year}`);
+
+      eventSource.onmessage = function(e) {
         const newLine = document.createElement("div");
         newLine.className = "line";
         newLine.textContent = e.data;
         logs.appendChild(newLine);
-        logs.scrollTop = logs.scrollHeight; // auto scroll to bottom
-    };
+        logs.scrollTop = logs.scrollHeight;
 
-    eventSource.addEventListener("done", function() {
+        // Progress Calculation
+        const currentMatch = e.data.match(/(\d{3})$/);
+        if (currentMatch) {
+          const currentRoll = parseInt(currentMatch[1], 10);
+          const total = parseInt(end_roll) - parseInt(start_roll) + 1;
+          const done = currentRoll - parseInt(start_roll) + 1;
+          const percent = Math.min(Math.floor((done / total) * 100), 100);
+          progressBar.style.width = percent + "%";
+          progressBar.textContent = percent + "%";
+        }
+      };
+
+      eventSource.addEventListener("done", function() {
         eventSource.close();
+        document.getElementById("spinner").style.display = "none";
+        progressBar.textContent = "Completed";
+      });
     });
-});
 
-    </script>
+    document.getElementById("downloadBtn").addEventListener("click", function () {
+      const logs = document.getElementById("logs").textContent;
+      const blob = new Blob([logs], { type: "text/plain;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "scrape_logs.txt";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+    let darkMode = true;
+
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light-theme");
+      darkMode = !darkMode;
+
+      themeIcon.innerHTML = darkMode
+        ? `<path d="M21 12.79A9 9 0 0111.21 3 7 7 0 0012 21a9 9 0 009-8.21z"></path>`
+        : `<circle cx="12" cy="12" r="5"></circle>
+           <line x1="12" y1="1" x2="12" y2="3"></line>
+           <line x1="12" y1="21" x2="12" y2="23"></line>
+           <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+           <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+           <line x1="1" y1="12" x2="3" y2="12"></line>
+           <line x1="21" y1="12" x2="23" y2="12"></line>
+           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+    });
+  </script>
 </body>
 </html>

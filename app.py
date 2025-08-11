@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, Response, send_file, stream_with_context
-import time, csv, io, re, requests
+import time, csv, io, re, requests, os
 from bs4 import BeautifulSoup
 app = Flask(__name__)
 
@@ -117,6 +117,5 @@ def download(filename):
     return send_file(filename, as_attachment=True)
 
 if __name__ == '__main__':
-    
-    # serve(app, host="0.0.0.0", port=8080)
-    app.run(debug=True, threaded=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False, threaded=True)

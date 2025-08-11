@@ -1,3 +1,6 @@
+[phases.build]
+cmds = ["which pip || echo 'No pip found'", "python --version"]
+
 [phases.setup]
 nixPkgs = ["python311Full"]
 

@@ -1,8 +1,12 @@
 [phases.setup]
-nixPkgs = ["python311Full"]
+nixPkgs = ["python311"]
 
 [phases.install]
-cmds = ["pip install -r requirements.txt"]
+cmds = [
+  "python -m ensurepip --upgrade",
+  "pip install --upgrade pip",
+  "pip install -r requirements.txt"
+]
 
 [start]
 cmd = "gunicorn -t 120 app:app"

@@ -1,6 +1,3 @@
-[phases.build]
-cmds = ["which pip || echo 'No pip found'", "python --version"]
-
 [phases.setup]
 nixPkgs = ["python311Full"]
 
@@ -8,4 +5,4 @@ nixPkgs = ["python311Full"]
 cmds = ["pip install -r requirements.txt"]
 
 [start]
-cmd = "gunicorn -t 120 app:app"
+cmd = "python wsgi.py"
